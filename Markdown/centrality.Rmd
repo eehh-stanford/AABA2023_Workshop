@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Centrality
 When we first read a graph into `R`, it is generally a good idea to explore it a bit to get a sense of its  overall properties. The best place to start is with the graph summary summary. We can use Padgett's data on Florentine marriages to explore the analysis of graphs using igraph.
 
-```{r}
+```{r, cache=TRUE, warning=FALSE, message=FALSE}
 require(igraph)
 flo <- read.table("../data/flo.txt", 
                   header=TRUE, row.names=1)
@@ -187,7 +187,7 @@ plot(gflo1, vertex.size=flo_measures[,"CE"]*10, vertex.color="plum",
 We can redo our comparative analysis of centralities with Kapferer's tailor shop. 
 
 ```{r cache=TRUE}
-A <- as.matrix(read.table("data/kapferer-tailorshop1.txt", 
+A <- as.matrix(read.table("../data/kapferer-tailorshop1.txt", 
                           header=TRUE, row.names=1))
 G <- graph.adjacency(A, mode="undirected", diag=FALSE)
 plot(G,vertex.shape="none", vertex.label.cex=0.75, 
@@ -214,7 +214,7 @@ cor(kap_measures)
 Sade (1972) grooming matrix from Cayo Santiago rhesus macaques. We will illustrate automatic coloring of vertices here. 
 
 ```{r}
-rhesus <- read.table("data/sade1.txt", header=FALSE)
+rhesus <- read.table("../data/sade1.txt", header=FALSE)
 rhesus <- as.matrix(rhesus)
 rhesus
 nms <- c("066", "R006", "CN", "ER", "CY", "EC", "EZ", "004", "065", "022", "076", "AC", "EK", "DL", "KD", "KE")

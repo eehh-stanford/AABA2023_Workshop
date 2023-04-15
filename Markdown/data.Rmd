@@ -32,7 +32,7 @@ For this tutorial, we use networks of support between Hogwarts students, as code
 
 An **edgelist** is usually formatted as a table where the first two columns contain the IDs of a pair of nodes in the network that have a tie between them. Optional additional columns may contain properties of the relationship between the nodes (e.g., the value of a tie). Any pair of nodes that does not have a tie between them is usually not included in an edgelist. This property is what makes edgelists a more efficient network data storage format than sociomatrices (see below). Unobserved edges can be encoded in edgelist format by including "NA" in the value column. Here's an example of a simple edgelist table with a value column: 
 
-```{r, echo=FALSE, cache=TRUE}
+```{r, cache=TRUE}
 require(igraph)
 library(knitr)
 
@@ -62,7 +62,7 @@ Here's a few examples of supportive interactions between Hogwarts students, and 
 - "Harry, you're the best in the year at Defence against the Dark Arts, " said Hermione. Chapter 15, p. 292
 - "That was quite good," Harry lied, but when she [Cho] raised her eyebrows he said, "Well, no, it was lousy, but I know you can do it propoerly, I was watching from over there." Chapter 18, p. 350
 
-```{r, echo=FALSE}
+```{r}
 From <- c("Luna Lovegood", "Hermione Granger", "Harry James Potter") 
 To <- c("Harry James Potter", "Harry James Potter", "Cho Chang")
 Chapter <- c(10, 15, 18)
@@ -71,7 +71,7 @@ supegs <- data.frame(From, To, Chapter, Page)
 knitr::kable(supegs)
 ```
 
-The columns "Chapter" and "Page" might not be necessary for any analysis I want to do, but they help me find the original data again in the future, in case I needed to double-check something, and they also allow me to distinguish duplicate ties between characters. If I were coding such data for a real project, I would probably also record some details about the specific nature and nature of the interaction.
+The columns "Chapter" and "Page" might not be necessary for any analysis we want to do, but they help us find the original data again in the future, in case we needed to double-check something, and they also allow us to distinguish duplicate ties between characters. If we were coding such data for a real project, we would probably also record some details about the specific nature and nature of the interaction.
 
 A similar procedure could be used to code up networks from field notes, although, obviously, you will have to make careful decisions about how to classify interactions, and about how you are sampling interactions among individuals. Such decisions should usually be made *a priori* (ideally with the benefit of a pilot study). If you are encoding relations that you view as constituting different networks, the easiest solution is usually to maintain separate edgelists for each type of relation. 
 
@@ -80,13 +80,13 @@ As a side note here, we cannot stress enough how important your sampling of inte
 Finally, if your edgelist is based on a name generator or other survey-based network data collection method, it should be straightforward to generate an edgelist---the main difficulty with these methods is usually entity resolution.
 
 
-###Importing an edgelist
+### Importing an edgelist
 
 Usually, you will save your edgelist as a tab- or comma-delimited file (.txt or .csv) and then import it to `R`.
 
-```{r, echo=TRUE}
+```{r, echo=TRUE, warning=FALSE}
 require(igraph)
-hp5edges <- read.table("data/hp5edgelist.txt", sep="\t", header=TRUE)
+hp5edges <- read.table("../data/hp5edgelist.txt", sep="\t", header=TRUE)
 
 #take a look
 head(hp5edges)
@@ -167,7 +167,7 @@ Normally, in addition to your edgelist (and possibly, edge values) you will have
 
 ```{r, echo=TRUE}
 
-attributes <- read.csv("data/hpindividuals.csv", header=TRUE)
+attributes <- read.csv("../data/hpindividuals.csv", header=TRUE)
 head(attributes)
 ```
 
@@ -200,7 +200,7 @@ Here's how to import a sociomatrix (and get it correctly lined up with your attr
 
 ```{r, echo=TRUE}
 #read in data
-hp5df <- read.table("data/hp5matrix.txt", sep="\t", header=FALSE) #note that this file has no row or column names
+hp5df <- read.table("../data/hp5matrix.txt", sep="\t", header=FALSE) #note that this file has no row or column names
 
 #inspect it
 head(hp5df)
@@ -211,13 +211,13 @@ Uh-oh, `R` thinks our data frame has only one column. That's not right. Taking a
 
 ```{r, echo=TRUE}
 #read in data
-hp5df <- read.table("data/hp5matrix.txt", sep=" ", header=FALSE) 
+hp5df <- read.table("../data/hp5matrix.txt", sep=" ", header=FALSE) 
 
 #inspect
 dim(hp5df) #much better
 ```
 
-Now the data are loaded correctly but we still have a problem. This sociomatrix has dimensions of 64x64, meaning there are 64 students in the network, but from before, we know that only 34 students actually appear in Book 5. This discrepancy is because Bossart and Meidert included all students who appeared in support relationships in ANY of the first six books so that they could do a temporal analysis. We'd prefer just to look at the students who appear in Book 5, so we need to remove these other students. 
+Now the data are loaded correctly but we still have a problem. This sociomatrix has dimensions of 64x64, meaning there are 64 students in the network, but from before, we know that only 34 students actually appear in Book 5. This discrepancy is because Bossart and Meidert included all students who appeared in support relationships in ANY of the first six books so that they could do a temporal analysis. We'd prefer to just look at the students who appear in Book 5, so we need to remove these other students. 
 
 ```{r, echo=TRUE}
 
@@ -243,16 +243,16 @@ plot(hp5net2, vertex.shape="none", vertex.label.cex=0.6, edge.arrow.size=0.3, ve
 Now we can proceed as before to remove self-loops and assign attributes.
 
 
-### From affiliation data to a network (bipartite networks)
+# From affiliation data to a network (bipartite networks)
 
 Sometimes networks may be generated from data on the presence or absence of individuals at certain place or time. Sociomatrices are square. If there are $n$ individuals in the sample, the resulting sociomatrix will be of rank $n \times n$. When you have matrix where you observe $n$ people at $k$ events or associated with $k$ institutions, the resulting matrix representing these relationships will be $n \times k$, which will not necessarily be square. This  matrix is known as an **incidence** or **affiliation matrix**. To convert an affiliation (person-by-event) matrix to a person-to-person network, simply multiply the affiliation matrix by its transpose. 
 
 Before doing this though, carefully consider what an affiliation matrix means in terms of relationships between persons. Not all group, place, or event affiliations correspond to relationships between persons that are meaningful with respect to your research question.
 
-# Dual Networks
+## Dual Networks
 
 ```{r, cache=TRUE}
-davismat <- as.matrix(read.table("data/davismat.txt",header=TRUE))
+davismat <- as.matrix(read.table("../data/davismat.txt",header=TRUE))
 southern <- graph_from_incidence_matrix(davismat)
 southern
 V(southern)$type
@@ -408,15 +408,15 @@ plot(gnums1, vertex.color="cyan", vertex.size=20)
 
 
 
-### Reading a Network from a Data Frame
+# Reading a Network from a Data Frame
 
 `igraph` has the capacity to construct a graph object from one or two data frames. It is quite convenient to use the option with two data frames, where the first is simply the edgelist for the network and the second holds all the associated vertex-covariate data. The two data frames are linked by the symbolic vertex names. This function is similar in principle to the base `R` function `merge` for joining data frames. 
 
 Read in the Colorado Springs high-risk network [e.g., @klovdahl_etal1994] using `graph_from_data_frame()`.
 
 ```{r, cache=TRUE}
-csel <- read.table("data/colorado_springs/edges.tsv",header=TRUE)
-csppl <- read.table("data/colorado_springs/nodes.tsv", header=TRUE)
+csel <- read.table("../data/colorado_springs/edges.tsv",header=TRUE)
+csppl <- read.table("../data/colorado_springs/nodes.tsv", header=TRUE)
 cs <- graph_from_data_frame(csel,vertices=csppl,directed=FALSE)
 cs <- simplify(cs)
 ## extract just the giant component to plot

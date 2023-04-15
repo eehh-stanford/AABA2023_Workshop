@@ -23,7 +23,7 @@ A graph (with no self-loops) with $n$ vertices has ${n \choose 2} = n(n-1)/2$ po
 
 The most basic non-trivial graph is a connected dyad. Note that a **dyad** is simply a pair of vertices, connected or not. This graph has two vertices and a single edge. We can create and visualize this graph using `igraph`.
 
-```{r cache=TRUE}
+```{r cache=TRUE, warning=FALSE, message=FALSE}
 require(igraph)
 g <- graph(c(1,2), n=2, dir=FALSE)
 plot(g, vertex.color="skyblue2",vertex.label.family="Helvetica")
@@ -73,7 +73,7 @@ Note that we can keep recycling the same layout since we still have a triangle, 
 Most graphs are more complex than a single edge or triangle. This means that we need to be able to read data files into `igraph`  (or whatever library we're using, such as `sna`). We can easily read a sociomatrix directly into R and then import it into `igraph`. A sociomatrix from Kapferer's classic [-@kapferer1972] study of social relations in a tailor shop in colonial North Rhodesia (now Zambia) describes the "instrumental" social interactions between 39 actors before organizing for an unsuccessful strike.  We first read the matrix file into R while simultaneously converting it to a matrix (`R` will otherwise treat it as a data frame). We then import the sociomatrix into `igraph` and plot the results. 
 
 ```{r cache=TRUE}
-A <- as.matrix(read.table("data/kapferer-tailorshop1.txt", 
+A <- as.matrix(read.table("../data/kapferer-tailorshop1.txt", 
                           header=TRUE, row.names=1))
 G <- graph.adjacency(A, mode="undirected", diag=FALSE)
 plot(G, vertex.color="skyblue2", vertex.label.family="Helvetica")
@@ -378,7 +378,7 @@ Evans-Pritchard's idea of the importance of positive cycles was more fully elabo
 When we first read a graph into `R`, it is generally a good idea to explore it a bit to get a sense of its overall properties. The best place to start is with the graph summary. We can use Padgett's data on Florentine marriages to explore the analysis of graphs using igraph.
 
 ```{r cache=TRUE}
-flo <- read.table("data/flo.txt", 
+flo <- read.table("../data/flo.txt", 
                   header=TRUE, row.names=1)
 gflo <- graph_from_adjacency_matrix(as.matrix(flo), mode="undirected")
 gflo

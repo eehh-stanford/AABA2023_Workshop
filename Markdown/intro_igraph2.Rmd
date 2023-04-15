@@ -137,7 +137,7 @@ gg <- g4 %du% g7
 gg <- rewire(gg, each_edge(prob = 0.3))
 plot(gg, vertex.color="skyblue2", vertex.size=5, vertex.label=NA)
 ## retain only the connected component
-gg <- induced.subgraph(gg, subcomponent(gg,1))
+gg <- induced_subgraph(gg, subcomponent(gg,1))
 plot(gg, vertex.color="skyblue2", vertex.size=5, vertex.label=NA)
 ```
 
@@ -177,7 +177,7 @@ plot(g4, vertex.size=15, vertex.label=NA, vertex.color=V(g4)$vertex.color,
 
 ```{r}
 kids <- as.matrix(
-  read.table("data/strayer_strayer1976-fig2.txt",
+  read.table("../data/strayer_strayer1976-fig2.txt",
                              header=FALSE)
   )
 kid.names <- c("Ro","Ss","Br","If","Td","Sd","Pe","Ir","Cs","Ka",
@@ -215,7 +215,7 @@ Note that you might want to change some of the graphics parameters depending on 
 
 ```{r}
 A <- as.matrix(
-  read.table(file="data/kapferer-tailorshop1.txt", 
+  read.table(file="../data/kapferer-tailorshop1.txt", 
              header=TRUE, row.names=1)
   )
 G <- graph.adjacency(A, mode="undirected", diag=FALSE)
@@ -281,7 +281,7 @@ plot(g3, vertex.color="skyblue2",
 
 ```{r, cache=TRUE}
 davismat <- as.matrix(
-  read.table(file="data/davismat.txt", 
+  read.table(file="../data/davismat.txt", 
             row.names=1, header=TRUE)
   )
 southern <- graph_from_incidence_matrix(davismat) 
