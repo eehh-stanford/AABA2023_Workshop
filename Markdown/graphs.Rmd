@@ -115,7 +115,10 @@ Suppose we combine two of the detected communities (call that `subg2`) and then 
 
 ```{r cache=TRUE}
 subg2 <- induced_subgraph(G, which(membership(fg)==4 | membership(fg)==1))
-subg3 <- delete.edges(subg2, c(12, 39, 40))
+## MATEO -- ABRAHAN: 9
+## PAULOS -- ZULU: 39
+## PAULOS -- LWANGA: 40
+subg3 <- delete.edges(subg2, c(9, 39, 40))
 par(mfrow=c(1,2))
 plot(subg2, vertex.shape="none", vertex.label.cex=0.5, edge.color=grey(0.85),
      vertex.label.family="Helvetica")
@@ -123,7 +126,7 @@ plot(subg3, vertex.shape="none", vertex.label.cex=0.5, edge.color=grey(0.85),
      vertex.label.family="Helvetica")
 ```
 
-By removing three edges (Mateo-Abraham, Paulos-Nkumbula, Paulos-Lwanga) in our subgraph, we create two distinct **components**. A component is a maximally connected subgraph of a graph. In graph theory the property of **maximality** means that a subgraph $\mathcal{G}^{\prime}$ is **maximal** for some property when the property holds for the subgraph but does not hold when additional vertices and incident edges are added. If we were to include a vertex from one of our two subgraphs of `subg3` in the other, the subgraph would no longer be a subcomponent (since that vertex would have no incident edges to the subgraph so there would be no path between it and the other vertices in the subgraph). One cannot traverse a path from, say, Kalundwe to Nkumbula.
+By removing three edges (Mateo-Abraham, Paulos-Zulu, Paulos-Lwanga) in our subgraph, we create two distinct **components**. A component is a maximally connected subgraph of a graph. In graph theory the property of **maximality** means that a subgraph $\mathcal{G}^{\prime}$ is **maximal** for some property when the property holds for the subgraph but does not hold when additional vertices and incident edges are added. If we were to include a vertex from one of our two subgraphs of `subg3` in the other, the subgraph would no longer be a subcomponent (since that vertex would have no incident edges to the subgraph so there would be no path between it and the other vertices in the subgraph). One cannot traverse a path from, say, Kalundwe to Nkumbula.
 
 While the subgraph containing Sign, Kalundwe, Paulos, and Matteo, (call it $G ^{\prime}_2$) is maximally connected, this doesn't mean that all members of $G ^{\prime}_2$ are directly connected to each other -- it only means that there is a path between each of its members. If every vertex in a subgraph is connected to every other vertex in that subgraph, the subgraph is known as a **clique**. A graph in which every vertex is adjacent to every other vertex is also known as a **complete graph**. What makes a clique a clique is that it is a complete graph that is a subgraph of some larger graph. Cliques or near-cliques play an important role in network clustering and community detection.
 
@@ -160,10 +163,12 @@ Many networks reveal a highly-skewed degree distribution. Such skewed degree dis
 It is conventional in much of the networks literature to plot degree distributions as the complement of the cumulative distribution function (a.k.a., the survivor function) on semi-logarithmic axes. This convention arose because a linear plot is suggestive of a power-law degree distribution and there has been substantial interest in power-laws in network phenomena. A much more robust plot is simply as a histogram, which will better reveal the probability mass function of the degree distribution. Note that using semi-logarithmic axes precludes the inclusion of degree $k=0$, since the logarithm of zero is undefined. Vertices of degree zero, known as *isolates* are often very important in and of themselves and can be diagnostic of social process, so a plot that precludes their inclusion is highly problematic. 
 
 ```{r, cache=TRUE}
-g <- erdos.renyi.game(1000, 1/500)
+#g <- erdos.renyi.game(1000, 1/500) #old syntax!
+g <- sample_gnp(1000,1/500)
 dd <- degree_distribution(g)
 lendd <- length(dd)
-plot((1:lendd)-1,dd, type="h", lwd=20, lend=2, col="blue", xlab="Degree (k)", ylab="Probability(K=k)")
+plot((1:lendd)-1,dd, type="h", lwd=20, lend=2, col="blue", 
+     xlab="Degree (k)", ylab="Probability(K=k)")
 ```
 
 ## Geodesics
@@ -209,7 +214,7 @@ In a directed graph, there are four different types of relations between vertice
 g <- graph( c( 1,2, 3,4, 5,6, 6,5), n=8)
 ccc <- cbind(c(300, 100, 100, 300, 100, 300, 100, 300),  
              c(300, 300, 230, 230, 160, 160, 90, 90))
-plot(g, layout=ccc, vertex.color=grey(0.75))
+plot(g, layout=ccc, vertex.color=grey(0.75), vertex.label.family="Helvetica")
 ```
 
 Note that $i \rightarrow j$, $i \leftarrow j$ are isomorphic. 
@@ -522,7 +527,7 @@ dimnames(measures)[[1]] <- dimnames(flo1)[[1]]
 measures
 # Plot the graph one last time with the vertices sized according to
 # betweenness centrality
-plot(gflo1, vertex.size=measures[,"CB"]+1, vertex.color="skyblue2", vertex.label=NA, layout=lay)
+plot(gflo1, vertex.size=measures[,"CB"]+1, vertex.color="plum", vertex.label=NA, layout=lay)
 ``` 
 
 
@@ -532,7 +537,7 @@ While centrality measures capture different notions of centrality, power, presti
 ## correlation matrix of the centralities
 cor(measures)
 ## vertex size proportional to eigenvalue centrality
-plot(gflo1, vertex.size=measures[,"CE"]*10, vertex.color="skyblue2", vertex.label=NA, layout=lay)
+plot(gflo1, vertex.size=measures[,"CE"]*10, vertex.color="plum", vertex.label=NA, layout=lay)
 ```
 
 Centralities can be on very different scales and, for some measures, the values can be so wildly different, that they are impractical for scaling vertex size for plotting. For example, betweenness centrality varies between zero and 47.5. We can write a simple function to rescale a variable to make it more useful for plotting.
@@ -540,7 +545,7 @@ Centralities can be on very different scales and, for some measures, the values 
 ```{r cache=TRUE}
 rescale <- function(x,a,b,c,d) c + (x-a)/(b-a)*(d-c)
 bb <- rescale(measures[,2], 0, 47.5, 1, 40)
-plot(gflo1, vertex.size=bb, vertex.color="skyblue2", vertex.label=NA, layout=lay)
+plot(gflo1, vertex.size=bb, vertex.color="plum", vertex.label=NA, layout=lay)
 ```
 
 
@@ -587,6 +592,7 @@ plot(gg, vertex.size=5,
     edge.color=ecols,
     layout=lay)
 ```
+
 Next, we'll highlight an individual in the minority population who has a tie to the majority population. 
 
 We want to highlight an ego network embedded within a larger graph. We can use the function `make_ego_graph()` to extract the ego network but it will renumber all the vertices and edges, making it useless for subsetting the larger graph for visualization. The key piece of information is that functions like `make_ego_graph()` and `induced_subgraph()` retain all the vertex/edge covariate values of the original graph. We can therefore construct vertex and edge counters and assign these as attributes.
@@ -643,6 +649,7 @@ plot(gg, vertex.size=5,
      edge.color=ecols2,
      layout=lay) 
 ```
+
 Because vertex 153 is in the core of the majority network, its second-order ego network is quite extensive. However, note that it does not have any ties whatsoever to the minority group.
 
 People tend to be skeptical of innovation. You are unlikely to adopt a major change to your livelihood (as an adaptation to climate change may very well be) from just anyone. Presumably, if you are going to adopt an innovation, it will need to come from a trusted, authoritative source. As suggested by @centola2019, you need to have *wide bridges* for innovation to spread, but deviance (even if positive) tends to be suppressed in the dense, cohesive cores of societies [@coleman1988]. This makes strongly-connected, cohesive groups unlikely sources of innovation, even though the cohesiveness suggests that trust should be high. Is there any part of this network away from the core where there are nonetheless wide bridges? Yes. It’s on the periphery, in the liminal space between the minority and majority communities. Members of the majority community with any ties to the minority community are likely to see multiple models of some innovation from their contacts with the minority population.
